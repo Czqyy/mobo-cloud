@@ -30,3 +30,9 @@ def classify(request: InferenceRequest):
     model = models['bert']
     result = model(request.text)[0]
     return result
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "healthy"
+    }
