@@ -13,7 +13,7 @@ async def lifespan(app: FastAPI):
     models['bert'] = pipeline(
         task="text-classification",
         model="distilbert-base-uncased-finetuned-sst-2-english",
-        device=0
+        device=1
     )
     yield
 
