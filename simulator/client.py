@@ -1,6 +1,10 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-BASE = 'http://0.0.0.0:8000/classify'
+load_dotenv()
+
+ENDPOINT = f'http://{os.getenv('BASE_IP')}:8000/classify'
 
 def send_request(text: str):
     payload = {
@@ -8,7 +12,8 @@ def send_request(text: str):
     }
 
     r = requests.post(
-        url=BASE,
+        url=ENDPOINT,
         json=payload
     )
+    print(r)
     return r.json()
