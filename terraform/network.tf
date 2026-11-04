@@ -1,19 +1,49 @@
-data "aws_vpc" "custom" {
-  id = var.vpc_id
+resource "aws_vpc" "cluster_vpc" {
+  cidr_block = "172.31.0.0/16"
 }
 
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.custom.id]
+resource "aws_internet_gateway" "cluster_igw" {
+  vpc_id = aws_vpc.cluster_vpc.id
+}
+
+resource "aws_subnet" "cluster_a" {
+  vpc_id                  = aws_vpc.cluster_vpc.id
+  cidr_block              = "172.31.1.0/24"
+  availability_zone       = "${var.aws_region}a"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "cluster_b" {
+  vpc_id                  = aws_vpc.cluster_vpc.id
+  cidr_block              = "172.31.2.0/24"
+  availability_zone       = "${var.aws_region}b"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.cluster_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.cluster_igw.id
   }
+}
+
+resource "aws_route_table_association" "rt_a" {
+  subnet_id      = aws_subnet.cluster_a.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_route_table_association" "rt_b" {
+  subnet_id      = aws_subnet.cluster_b.id
+  route_table_id = aws_route_table.public_rt.id
 }
 
 # ALB Security Group
 resource "aws_security_group" "alb_sg" {
   name        = "inference-alb-sg"
   description = "Public ingress for ALB"
-  vpc_id      = data.aws_vpc.custom.id
+  vpc_id      = aws_vpc.cluster_vpc.id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "alb_allow_public" {
@@ -38,7 +68,7 @@ resource "aws_vpc_security_group_egress_rule" "alb_to_workers" {
 resource "aws_security_group" "worker_sg" {
   name        = "inference-worker-sg"
   description = "Worker accepting traffic from ALB"
-  vpc_id      = data.aws_vpc.custom.id
+  vpc_id      = aws_vpc.cluster_vpc.id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "worker_from_alb" {

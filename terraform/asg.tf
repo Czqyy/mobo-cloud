@@ -13,7 +13,7 @@ resource "aws_autoscaling_group" "fleet" {
   name_prefix               = "inference-fleet-"
   min_size                  = var.asg_min_size
   max_size                  = var.asg_max_size
-  vpc_zone_identifier       = data.aws_subnets.default.ids
+  vpc_zone_identifier       = [aws_subnet.cluster_a.id, aws_subnet.cluster_b.id]
   target_group_arns         = [aws_lb_target_group.inference_tg.arn]
   health_check_type         = "ELB"
   health_check_grace_period = 120

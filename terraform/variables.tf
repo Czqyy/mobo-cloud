@@ -1,7 +1,7 @@
 variable "aws_region" {
   type        = string
   description = "AWS deployment region"
-  default     = "eu-north-1"
+  default     = "eu-west-2"
 }
 
 variable "ami_id" {
@@ -23,11 +23,6 @@ variable "worker_ssh_key_name" {
 variable "worker_ssh_allowed_cidr" {
   type        = string
   description = "IPv4 CIDR allowed to connect to worker instances over SSH"
-}
-
-variable "vpc_id" {
-  type        = string
-  description = "VPC ID"
 }
 
 variable "asg_min_size" {

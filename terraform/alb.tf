@@ -4,7 +4,7 @@ resource "aws_lb" "inference_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
-  subnets            = data.aws_subnets.default.ids
+  subnets            = [aws_subnet.cluster_a.id, aws_subnet.cluster_b.id]
 
   enable_cross_zone_load_balancing = true
   idle_timeout                     = 60
@@ -15,7 +15,7 @@ resource "aws_lb_target_group" "inference_tg" {
   name        = "inference-tg"
   port        = 8000
   protocol    = "HTTP"
-  vpc_id      = data.aws_vpc.custom.id
+  vpc_id      = aws_vpc.cluster_vpc.id
   target_type = "instance"
 
   load_balancing_cross_zone_enabled = "use_load_balancer_configuration"
