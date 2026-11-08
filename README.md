@@ -9,6 +9,7 @@ uvicorn workload.main:app --host 0.0.0.0 --port 8000 --reload
 Manually setup a running EC2 instance for desired workload and snapshot into an AMI and set `ami_id=<AMI ID>` in `./terraform/terraform.tfvars`. Creating this AMI makes it faster to directly get an EC2 instance up and running (as Docker container). 
 
 #### Snapshot AMI
+While SSH'ed into a fresh EC2 instance:
 ```bash
 # Install docker and git
 sudo dnf install -y docker git
@@ -49,6 +50,10 @@ terraform apply -auto-approve
 
 ### Teardown
 ```bash
+# Terminate instances without tearing down all resources
+terraform plan -var='asg_min_size=0' -var='asg_max_size=0'
+terraform apply -var='asg_min_size=0' -var='asg_max_size=0'
+
 # Teardown every resources created
 terraform destroy -auto-approve
 ```
