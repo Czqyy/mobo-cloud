@@ -12,9 +12,9 @@ async def lifespan(app: FastAPI):
     # Load model
     models['bert'] = pipeline(
         task="text-classification",
-        model="distilbert-base-uncased-finetuned-sst-2-english",
-        device=1
+        model="distilbert-base-uncased-finetuned-sst-2-english"
     )
+    models["bert"]('Warm-up Request')
     yield
 
     # Clean up
