@@ -59,3 +59,11 @@ terraform apply -var='asg_min_size=0' -var='asg_max_size=0'
 # Teardown every resources created
 terraform destroy -auto-approve
 ```
+
+## Locust Simulation
+```bash
+cd ./simulator
+
+locust --headless --users <num_users> --spawn-rate <user_per_second>
+```
+
