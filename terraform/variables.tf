@@ -4,9 +4,9 @@ variable "aws_region" {
   default     = "eu-west-2"
 }
 
-variable "ami_id" {
+variable "ami_name" {
   type        = string
-  description = "AMI ID of pre-baked inference server instance"
+  description = "Name of AMI of pre-baked inference server instance"
 }
 
 variable "instance_type" {

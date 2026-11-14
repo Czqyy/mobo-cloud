@@ -1,7 +1,18 @@
+# Custom ami data resource
+data "aws_ami" "inference_ami" {
+  most_recent = true
+  owners      = ["self"]
+
+  filter {
+    name   = "name"
+    values = [var.ami_name]
+  }
+}
+
 # Worker Launch Template
 resource "aws_launch_template" "worker" {
   name_prefix   = "inference-worker-"
-  image_id      = var.ami_id
+  image_id      = data.aws_ami.inference_ami.id
   instance_type = var.instance_type
   key_name      = var.worker_ssh_key_name
 
