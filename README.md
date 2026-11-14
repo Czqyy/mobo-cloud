@@ -1,7 +1,9 @@
 # Multi-objective Optimisation (MOBO) of Cloud Infrastructure
 ## Running Web Server with Uvicorn
 ```bash
-uvicorn workload.main:app --host 0.0.0.0 --port 8000 --reload
+cd ./workload
+
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 ## Terraform AWS Provision
 
