@@ -64,6 +64,6 @@ terraform destroy -auto-approve
 ```bash
 cd ./simulator
 
-locust --headless --users <num_users> --spawn-rate <user_per_second>
+locust --headless
 ```
 
