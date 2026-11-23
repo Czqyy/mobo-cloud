@@ -44,12 +44,12 @@ resource "aws_autoscaling_policy" "cpu_target" {
   name                      = "cpu-target-tracking"
   autoscaling_group_name    = aws_autoscaling_group.fleet.name
   policy_type               = "TargetTrackingScaling"
-  estimated_instance_warmup = 60
+  estimated_instance_warmup = var.instance_warmup
 
   target_tracking_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
-    target_value = 60
+    target_value = var.target_cpu
   }
 }

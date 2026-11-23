@@ -12,11 +12,12 @@ resource "aws_lb" "inference_alb" {
 
 # Target Group
 resource "aws_lb_target_group" "inference_tg" {
-  name        = "inference-tg"
-  port        = 8000
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.cluster_vpc.id
-  target_type = "instance"
+  name                 = "inference-tg"
+  port                 = 8000
+  protocol             = "HTTP"
+  vpc_id               = aws_vpc.cluster_vpc.id
+  target_type          = "instance"
+  deregistration_delay = var.deregistration_delay
 
   load_balancing_cross_zone_enabled = "use_load_balancer_configuration"
 

@@ -34,5 +34,23 @@ variable "asg_min_size" {
 variable "asg_max_size" {
   type        = number
   description = "Maximum number of worker instances"
-  default     = 2
+  default     = 3
+}
+
+variable "instance_warmup" {
+  type        = number
+  description = "Estimated time(s) needed for new instance to warm up"
+  default     = 60
+}
+
+variable "deregistration_delay" {
+  type        = number
+  description = "Draining interval(s) for requests to complete before deregistering target"
+  default     = 30
+}
+
+variable "target_cpu" {
+  type        = number
+  description = "Target CPU utilisation rate"
+  default     = 30
 }
