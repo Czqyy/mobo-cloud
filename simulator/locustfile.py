@@ -2,10 +2,17 @@ import os
 from locust import HttpUser, LoadTestShape, task, poisson
 from dotenv import load_dotenv
 import math
+import random
+import json
 
 load_dotenv()
 
+random.seed(42)
+
 ENDPOINT = f'http://{os.getenv('BASE_IP')}'
+
+with open("corpus.jsonl", "r", encoding="utf-8") as f:
+   PAYLOADS = [json.loads(line) for line in f if line.strip()]
 
 class RequestSimulator(HttpUser):
   host = ENDPOINT
@@ -13,34 +20,30 @@ class RequestSimulator(HttpUser):
 
   @task
   def send_inference(self):
-    payload = {
-      'text': 'hi'
-    }
+    payload = random.choice(PAYLOADS)
     self.client.post('/classify', json=payload)
 
 class StepLoadShape(LoadTestShape):
-    """
-    A step load shape
+  """
+  A step load shape
 
-    Keyword arguments:
+  Keyword arguments:
+      step_time -- Time between steps
+      step_load -- User increase amount at each step
+      spawn_rate -- Users to stop/start per second at every step
+      time_limit -- Time limit in seconds
+  """
 
-        step_time -- Time between steps
-        step_load -- User increase amount at each step
-        spawn_rate -- Users to stop/start per second at every step
-        time_limit -- Time limit in seconds
+  step_time = 20
+  step_load = 10
+  spawn_rate = 10
+  time_limit = 180
 
-    """
+  def tick(self):
+    run_time = self.get_run_time()
 
-    step_time = 20
-    step_load = 10
-    spawn_rate = 10
-    time_limit = 180
+    if run_time > self.time_limit:
+        return None
 
-    def tick(self):
-        run_time = self.get_run_time()
-
-        if run_time > self.time_limit:
-            return None
-
-        current_step = math.floor(run_time / self.step_time) + 1
-        return (current_step * self.step_load, self.spawn_rate)
+    current_step = math.floor(run_time / self.step_time) + 1
+    return (current_step * self.step_load, self.spawn_rate)
