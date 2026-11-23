@@ -23,27 +23,18 @@ class RequestSimulator(HttpUser):
     payload = random.choice(PAYLOADS)
     self.client.post('/classify', json=payload)
 
-class StepLoadShape(LoadTestShape):
-  """
-  A step load shape
-
-  Keyword arguments:
-      step_time -- Time between steps
-      step_load -- User increase amount at each step
-      spawn_rate -- Users to stop/start per second at every step
-      time_limit -- Time limit in seconds
-  """
-
-  step_time = 20
-  step_load = 10
-  spawn_rate = 10
-  time_limit = 180
+class StageLoadShape(LoadTestShape):
+  stages = [
+     {"duration": 120, "users": 10, "spawn_rate": 5},
+     {"duration": 480, "users": 300, "spawn_rate": 50},
+     {"duration": 1200, "users": 10, "spawn_rate": 10}
+  ]
 
   def tick(self):
     run_time = self.get_run_time()
 
-    if run_time > self.time_limit:
-        return None
+    for stage in self.stages:
+      if run_time < stage["duration"]:
+        return (stage["users"], stage["spawn_rate"])
 
-    current_step = math.floor(run_time / self.step_time) + 1
-    return (current_step * self.step_load, self.spawn_rate)
+    return None

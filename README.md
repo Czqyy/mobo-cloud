@@ -64,6 +64,10 @@ terraform destroy -auto-approve
 ```bash
 cd ./simulator
 
+# Basic run in CLI
 locust --headless
+
+# Run with results logging
+locust --headless --csv=results/run --csv-full-history --html=results/report.html --loglevel INFO
 ```
 

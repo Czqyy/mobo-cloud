@@ -11,3 +11,4 @@
 *.tfstate.*
 
 *.jsonl
+simulator/results/
